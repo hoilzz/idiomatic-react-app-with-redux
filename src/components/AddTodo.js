@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { addTodo } from '../actions';
 
-const AddTodo = ({ addTodo }) => {
+const AddTodo = ({ dispatch }) => {
   let input;
 
   return (
@@ -13,25 +13,21 @@ const AddTodo = ({ addTodo }) => {
           if (!input.value.trim()) {
             return;
           }
-          addTodo(input.value);
+          dispatch(addTodo(input.value));
           input.value = '';
-        }}>
-        <input
-          ref={node => {
-            input = node;
-          }}
-        />
-        <button type="submit">Add Todo</button>
+        }}
+      >
+        <input ref={node => { input = node; }} />
+        <button type="submit">
+          Add Todo
+        </button>
       </form>
     </div>
   );
 };
 
 AddTodo.propTypes = {
-  addTodo: PropTypes.func.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default connect(
-  null,
-  { addTodo }
-)(AddTodo);
+export default connect()(AddTodo);

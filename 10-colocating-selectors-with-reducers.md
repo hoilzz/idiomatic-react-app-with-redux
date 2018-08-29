@@ -15,7 +15,18 @@ getVisibleTodos 는 reducer 로 옮기고 named export 하게 만든다.
 
 ## Updating the root reducer
 
-visibleTodoList 내부에서, `todos` 값을 state 에서 읽을 수 있기때문에 state 구조에 의존적이다.
+visibleTodoList 내부에서, `todos` 값을 state 에서 읽을 수 있기때문에 **state 구조에 의존적**이다.
+
+_rootReducer.js_
+```javascript
+
+// todos를 인자로 받기 때문에, state.todos로 호출한다. 그래서 state 구조에 의존적
+// const getvisibleTodos(todos, filter) => ...
+
+// 애초에 state를 인자로 받아 state구조에 의존하지 않도록 변경
+export const getVisibleTodos = (state, filter) =>
+  fromTodos.getVisibleTodos(state.todos, filter);
+```
 
 named selector export 와 함께 root reducer 를 업데이트해보자. `getVisibleTodos` 또한 호출될 것이고 이전처럼 state 와 filter 도 허용한다. 그러나, 이번에는 `state`는 combined reducer 의 state 와 일치한다.
 
