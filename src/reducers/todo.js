@@ -7,12 +7,12 @@ const todo = (state, action) => {
         completed: false,
       };
     case 'TOGGLE_TODO':
-      if (!state[action.id]) {
-        return state[action.id];
+      if (!state) {
+        return state;
       }
       return {
-        ...state[action.id],
-        completed: !state[action.id].completed,
+        ...state,
+        completed: !state.completed,
       };
     default:
       return state;

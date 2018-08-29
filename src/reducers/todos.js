@@ -7,7 +7,7 @@ const byId = (state = [], action) => {
     case 'TOGGLE_TODO':
       return {
         ...state,
-        [action.id]: todo(state, action),
+        [action.id]: todo(state[action.id], action),
       };
     default:
       return state;
