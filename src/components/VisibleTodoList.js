@@ -1,18 +1,49 @@
+import React from 'react';
+import { string, func } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { toggleTodo } from '../actions';
-import TodoList from './TodoList';
 import { getVisibleTodos } from '../reducers';
+import { fetchTodos } from '../api';
+import TodoList from './TodoList';
 
-const mapStateToProps = (state, { params }) => ({
-  todos: getVisibleTodos(state, params.filter || 'all'),
-});
+class VisibleTodoList extends React.Component {
+  static propTypes = {
+    filter: string,
+    onTodoClick: func,
+    receiveTodos: func,
+  };
+  // cmd일 때 fetchTodo
+  componentDidMount() {
+    fetchTodos(this.props.filter).then(todos =>
+      console.log(this.props.filter, todos)
+    );
+  }
 
-const VisibleTodoList = withRouter(
+  componentDidUpdate(prevProps) {
+    if (this.props.filter !== prevProps.filter) {
+      fetchTodos(this.props.filter).then(
+        todos => console.log(this.props.filter, todos) // eslint-disable-line no-console
+      );
+    }
+  }
+  // render todolist에 props다 주입
+  render() {
+    return <TodoList {...this.props} />;
+  }
+}
+
+const mapStateToProps = (state, { params }) => {
+  const filter = params.filter || 'all';
+  return {
+    todos: getVisibleTodos(state, params.filter || 'all'),
+    filter,
+  };
+};
+
+export default withRouter(
   connect(
     mapStateToProps,
     { onTodoClick: toggleTodo }
-  )(TodoList)
+  )(VisibleTodoList)
 );
-
-export default VisibleTodoList;
