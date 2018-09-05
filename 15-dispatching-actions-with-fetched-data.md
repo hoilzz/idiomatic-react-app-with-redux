@@ -1,10 +1,44 @@
 # 15. fetched data로 action dispatch 하기
 
-fetchData라는 이름의 common code로 추출하기
+- componentDidMount()에서 fetchData라는 이름의 common code로 추출하기
+- componentDidUpdate에서 `filter`가 변경될 때마다 호출하기
 
 ## Updating fetchData()
 
-fetch한 todos와 함꼐 호출하는 callback prop을 `receiveTodos`를 갖자.
+fetch한 todos로 callback prop을 호출하는 `receiveTodos`를 만들어보자.
+
+```javascript
+fetchData() {
+  fetchTodos(this.props.filter).then(todos =>
+    this.props.receiveTodos(todos)
+  );
+}
+```
+
+## receiveTodos() 구현하기
+
+- server response를 가지는 action을 생성
+- `response` field와 `RECEIVE_TODOS` type을 리턴
+
+_action/index.js_
+```javascript
+export const receiveTodos = (response) => ({
+  type: 'RECEIVE_TODOS',
+  resposne
+})
+```
+
+- 이 액션을 처리하는 리듀서는 response와 일치하는 filter가 뭔지 알아야함
+- 그래서 `filter` 인자를 추가하고 action object에 전달할 것이다.
+
+```javascript
+export const receiveTodos = (filter, response) => ({
+  type: 'RECEIVE_TODOS',
+  filter,
+  response,
+});
+```
+
 
 
 ## Updating VisibleTodoList component with filter

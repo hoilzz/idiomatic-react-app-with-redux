@@ -36,7 +36,7 @@ class VisibleTodoList extends React.Component {
 const mapStateToProps = (state, { params }) => {
   const filter = params.filter || 'all';
   return {
-    todos: getVisibleTodos(state, params.filter || 'all'),
+    todos: getVisibleTodos(state, filter),
     filter,
   };
 };
@@ -44,6 +44,6 @@ const mapStateToProps = (state, { params }) => {
 export default withRouter(
   connect(
     mapStateToProps,
-    { onTodoClick: toggleTodo }
+    { onTodoClick: toggleTodo,  }
   )(VisibleTodoList)
 );
