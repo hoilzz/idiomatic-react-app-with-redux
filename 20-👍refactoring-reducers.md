@@ -10,9 +10,10 @@
 루트 리듀서는 다음을 가진다.
 
 - byId
-- allIds
-- activeIds
-- completeIds
+- idsByFilter
+  - allIds
+  - activeIds
+  - completeIds
 
 몇몇 개를 분리된 파일로 만들어보자.
 
@@ -80,4 +81,7 @@ export const getVisibleTodos = (state, filter) => {
 }
 ```
 
-`byId`를 별개
+`byId` 리듀서를 별개 파일로 만들었기 때문에, 이 리듀서는 단지 lookup table이라는 가정을 하고싶지 않다.(뭔소리?) 이걸 염두해두고, `fromById.getTodo` selector를 이용하여 state와 해당 ID를 내보내고 전달한다.
+
+## summary
+
