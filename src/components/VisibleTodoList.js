@@ -2,16 +2,16 @@ import React from 'react';
 import { string, func } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { toggleTodo, receiveTodos } from '../actions';
+import { toggleTodo, fetchTodos } from '../actions';
 import { getVisibleTodos } from '../reducers';
-import { fetchTodos } from '../api';
+// import { fetchTodos } from '../api';
 import TodoList from './TodoList';
 
 class VisibleTodoList extends React.Component {
   static propTypes = {
     filter: string,
     onTodoClick: func,
-    receiveTodos: func,
+    fetchTodos: func,
   };
   // cmd일 때 fetchTodo
   componentDidMount() {
@@ -25,10 +25,8 @@ class VisibleTodoList extends React.Component {
   }
 
   fetchData() {
-    const { filter, receiveTodos } = this.props;
-    fetchTodos(filter).then(todos =>
-      receiveTodos(filter, todos)
-    );
+    const { filter, fetchTodos } = this.props;
+    fetchTodos(filter);
   }
   // render todolist에 props다 주입
   render() {
@@ -49,7 +47,7 @@ export default withRouter(
     mapStateToProps,
     {
       onTodoClick: toggleTodo,
-      receiveTodos,
+      fetchTodos,
     }
   )(VisibleTodoList)
 );
