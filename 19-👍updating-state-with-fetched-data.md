@@ -127,7 +127,7 @@ const activeIds = (state = [], action) => {
 
 `activeIds`와 `allIds`는 `RECIEVE_TODOS` 액션이 실행될 때, 새로운 state를 리턴해야 한다. 하지만 어떤 `id`배열이 업데이트 되야 하는지 알려줄 방법이 필요하다.
 
-만약 `RECEIVE_TODOS` action을 재호출한다면, action 객체에 `filter`를 전달해야 한다. 이것은 우리가 reducer와 상응하는 filter와 action 내부의 filter를 비교할 수 있게 해준다.
+만약 `RECEIVE_TODOS` action을 재호출한다면, action 객체에 `filter`를 전달해야 한다. 이것은 우리가 **reducer와 상응하는 filter와 action 내부의 filter를 비교할 수 있게 해준다.**
 
 *activeIds reducer*
 

@@ -36,6 +36,7 @@ class VisibleTodoList extends React.Component {
 
 const mapStateToProps = (state, { params }) => {
   const filter = params.filter || 'all';
+  console.log('filter: ', filter);
   return {
     todos: getVisibleTodos(state, filter),
     filter,
