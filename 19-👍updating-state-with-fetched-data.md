@@ -70,7 +70,7 @@ const idsByFilter = combineReducers({
 
 ## allIds 리듀서 업데이트하기
 
-원래 `allIDs` 리듀서는 `ADD_TODO` action과 IDs의 배열을 관리했다.
+원래 `allIds` 리듀서는 `ADD_TODO` action과 IDs의 배열을 관리했다.
 
 서버로부터 fetch된 데이터에 대해 응답하기 위해 뭔가 가르칠꺼다.
 

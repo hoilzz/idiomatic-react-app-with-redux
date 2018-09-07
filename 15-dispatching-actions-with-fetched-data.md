@@ -39,8 +39,6 @@ export const receiveTodos = (filter, response) => ({
 });
 ```
 
-
-
 ## Updating VisibleTodoList component with filter
 
 action creator를 통해 filter를 전달하여 `fetchData`함수를 업데이트 해야한다.
