@@ -2,7 +2,7 @@ import React from 'react';
 import { string, func, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { toggleTodo, fetchTodos } from '../actions';
+import { toggleTodo, fetchTodos, requestTodos } from '../actions';
 import { getVisibleTodos, getIsFetching } from '../reducers';
 // import { fetchTodos } from '../api';
 import TodoList from './TodoList';
@@ -13,6 +13,7 @@ class VisibleTodoList extends React.Component {
     onTodoClick: func,
     fetchTodos: func,
     isFetching: bool,
+    requestTodos: func,
   };
   // cmd일 때 fetchTodo
   componentDidMount() {
@@ -26,13 +27,15 @@ class VisibleTodoList extends React.Component {
   }
 
   fetchData() {
-    const { filter, fetchTodos } = this.props;
+    const { filter, fetchTodos, requestTodos } = this.props;
+    requestTodos(filter);
     fetchTodos(filter);
   }
   // render todolist에 props다 주입
   render() {
+    const { isFetching, todos } = this.props;
     {
-      return this.props.isFetching ? (
+      return isFetching && !todos.length ? (
         <p>Fetching..!!</p>
       ) : (
         <TodoList {...this.props} />
@@ -43,7 +46,6 @@ class VisibleTodoList extends React.Component {
 
 const mapStateToProps = (state, { params }) => {
   const filter = params.filter || 'all';
-  console.log('filter: ', filter);
   return {
     todos: getVisibleTodos(state, filter),
     isFetching: getIsFetching(state, filter),
@@ -57,6 +59,7 @@ export default withRouter(
     {
       onTodoClick: toggleTodo,
       fetchTodos,
+      requestTodos,
     }
   )(VisibleTodoList)
 );

@@ -17,6 +17,7 @@ const createList = filter => {
     if (action.filter !== filter) {
       return state;
     }
+    console.log(action.type);
     switch (action.type) {
       case 'REQUEST_TODOS':
         return true;
