@@ -1,9 +1,9 @@
 import React from 'react';
-import { string, func } from 'prop-types';
+import { string, func, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { toggleTodo, fetchTodos } from '../actions';
-import { getVisibleTodos } from '../reducers';
+import { getVisibleTodos, getIsFetching } from '../reducers';
 // import { fetchTodos } from '../api';
 import TodoList from './TodoList';
 
@@ -12,6 +12,7 @@ class VisibleTodoList extends React.Component {
     filter: string,
     onTodoClick: func,
     fetchTodos: func,
+    isFetching: bool,
   };
   // cmd일 때 fetchTodo
   componentDidMount() {
@@ -30,7 +31,13 @@ class VisibleTodoList extends React.Component {
   }
   // render todolist에 props다 주입
   render() {
-    return <TodoList {...this.props} />;
+    {
+      return this.props.isFetching ? (
+        <p>Fetching..!!</p>
+      ) : (
+        <TodoList {...this.props} />
+      );
+    }
   }
 }
 
@@ -39,6 +46,7 @@ const mapStateToProps = (state, { params }) => {
   console.log('filter: ', filter);
   return {
     todos: getVisibleTodos(state, filter),
+    isFetching: getIsFetching(state, filter),
     filter,
   };
 };
