@@ -17,6 +17,10 @@ export const getIsFetching = (state, filter) => {
   return fromList.getIsFetching(state.listByFilter[filter]);
 };
 
+export const getErrorMessage = (state, filter) => {
+  fromList.getErrorMessage(state.listByFilter[filter]);
+};
+
 const todos = combineReducers({
   byId,
   listByFilter,

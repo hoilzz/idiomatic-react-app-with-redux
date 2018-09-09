@@ -3,9 +3,14 @@ import { string, func, bool } from 'prop-types';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { toggleTodo, fetchTodos, requestTodos } from '../actions';
-import { getVisibleTodos, getIsFetching } from '../reducers';
+import {
+  getVisibleTodos,
+  getIsFetching,
+  getErrorMessage,
+} from '../reducers';
 // import { fetchTodos } from '../api';
 import TodoList from './TodoList';
+import FetchError from './FetchError';
 
 class VisibleTodoList extends React.Component {
   static propTypes = {
@@ -33,7 +38,15 @@ class VisibleTodoList extends React.Component {
   }
   // render todolist에 props다 주입
   render() {
-    const { isFetching, todos } = this.props;
+    const { isFetching, errorMessage, todos } = this.props;
+    if (errorMessage && !todos.length) {
+      return (
+        <FetchError
+          message={errorMessage}
+          onRetry={() => this.fetchData()}
+        />
+      );
+    }
     {
       return isFetching && !todos.length ? (
         <p>Fetching..!!</p>
@@ -48,6 +61,7 @@ const mapStateToProps = (state, { params }) => {
   const filter = params.filter || 'all';
   return {
     todos: getVisibleTodos(state, filter),
+    errorMessage: getErrorMessage(state, filter),
     isFetching: getIsFetching(state, filter),
     filter,
   };
