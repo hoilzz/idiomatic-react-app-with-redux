@@ -27,9 +27,9 @@ class VisibleTodoList extends React.Component {
   }
 
   fetchData() {
+    console.log('aaa');
     const { filter, fetchTodos, requestTodos } = this.props;
-    requestTodos(filter);
-    fetchTodos(filter);
+    fetchTodos(filter).then(() => console.log('done'));
   }
   // render todolist에 props다 주입
   render() {
