@@ -7,7 +7,7 @@ export const getTodo = (state, id) => state[id];
 
 const byId = (state = {}, action) => {
   switch (action.type) {
-    case 'RECEIVE_TODOS': {
+    case 'FETCH_TODOS_SUCCESS': {
       const nextById = { ...state };
       action.response.forEach(todo => {
         nextById[todo.id] = todo;
@@ -16,6 +16,12 @@ const byId = (state = {}, action) => {
       return {
         ...state,
         ...nextById,
+      };
+    }
+    case 'ADD_TODO_SUCCESS': {
+      return {
+        ...state,
+        [action.reponse.id]: action.response,
       };
     }
     default:
