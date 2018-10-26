@@ -1,6 +1,7 @@
-import { v4 } from 'node-uuid';
+import { normalize } from 'normalizr';
 import * as api from '../api';
 import { getIsFetching } from '../reducers';
+import * as schema from './schema';
 
 export const receiveTodos = (filter, response) => ({
   type: 'RECEIVE_TODOS',
@@ -20,6 +21,10 @@ export const fetchTodos = filter => (dispatch, getState) => {
   dispatch(requestTodos(filter));
   return api.fetchTodos(filter).then(
     response => {
+      console.log(
+        'normalized response: ',
+        normalize(response, schema.arrayOfTods)
+      );
       dispatch({
         type: 'FETCH_TODOS_SUCCESS',
         filter,
