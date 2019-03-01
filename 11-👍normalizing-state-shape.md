@@ -1,6 +1,9 @@
 # Normalizing the state shape
 
-state tree 내부에서 `todo` objects 의 배열을 todos 로 나타낸다. 그러나, real app 에서 single array 이상일 수도 있고 다른 배열에서 동일한 ids 를 가진 todos 의 sync 가 맞지 않을 수 있다.
+state tree 내부에서 `todo` objects 의 배열을 todos 로 나타낸다.
+
+- 그러나, real app 에서 single array 이상일 수도 있고
+- 다른 배열에서 동일한 ids 를 가진 todos 의 sync 가 맞지 않을 수 있다.
 
 _todos.js_ Before
 
@@ -19,7 +22,7 @@ const todos = (state = [], action) => {
 
 _todos.js_ 리팩토링하기
 
-state 를 db 로 다루기, **todos 를 id 에 의해 인덱싱된 obejct 로 유지할 것이다.**
+state 를 db 로 다루기, **todos 를 id 에 의해 인덱싱된 obejct 로 유지할 것**
 
 - reducer 를 `byID`로 리네이밍하기
 - 마지막 index 에 new item 추가 or 매번 매핑하기 말고 lookup table 내부의 값으로 변경할 것이다.
@@ -63,6 +66,13 @@ const allIds = (state = [], action) => {
 ```
 
 `todos.js`에서 단일 리듀서로 export 해야한다. 그래서 `byId`와 `allIds` 리듀서를 컴바인 하기위해 combineReducers()를 다시 사용한다.
+
+```javascript
+const todos = combineReducers({
+  byId,
+  allIds,
+});
+```
 
 > Note: combined reducers 를 너가 원하는 만큼 사용할 수 있다. top-level reducer 에서만 사용하지 않아도 된다. 사실 너의 앱이 커질때마다 이런 경우는 허다하다. 몇가지 장소에 combineReducer 를 사용할 것이다.
 
@@ -108,19 +118,93 @@ todos.js 는 넘 커졌다. single todo 를 관리하는 파일을 따로 생성
 
 ## Summary
 
+todos를 배열로 관리했다. 이에 따르는 문제점
+- real world에서는 1개 이상의 배열을 가짐
+- 다른 배열에 있는 동일 ID를 가진 item의 동기화가 안될 수 있음
+
 todos 를 id 에 의해 인덱싱된 object 로 유지
 
 - todos 를 byId 로 변경하기
   - 내부 구조도 `id: value`인 lookup table 로 변경하기
 - allIds reducer 추가하기
-
   - id 만 관리되는 배열 만들기
 
 - combineReducer 는 top-level 뿐만 아니라 여러 레벨에서 사용가능. 앱 커지면 저절로 필요성 느낄 것이다.
 
 - selector 업데이트하기
-
   - state 구조 바꼈다. selector 도 동일하게 바꿔주자.
   - todos 는 배열을 더이상 사용하지 않기 떄문에 배열을 생성해주는 getAllTodos 셀렉터를 만들자.
 
 - getVisibleTodo 에서 getAllTodos 를 가져와서, 이 데이터의 필터링된 결과를 리턴한다.
+
+## 내가 리팩토링한거 중 다르게 된거
+
+*todos.js*
+```javascript
+const byId = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+    case 'TOGGLE_TODO':
+      return {
+        ...state,
+        [action.id]: todo(state, action),
+      };
+    default:
+      return state;
+  }
+};
+```
+
+*todos.js*
+```javascript
+const byId = (state = [], action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+    case 'TOGGLE_TODO':
+      return {
+        ...state,
+        [action.id]: todo(state, action),
+      };
+    default:
+      return state;
+  }
+};
+```
+
+*todo.js*
+```javascript
+const todo = (state, action) => {
+  switch (action.type) {
+    case 'ADD_TODO':
+      return {
+        id: action.id,
+        text: action.text,
+        completed: false,
+      };
+    case 'TOGGLE_TODO':
+      if (!state[action.id]) {
+        return state[action.id];
+      }
+      return {
+        ...state[action.id],
+        completed: !state[action.id].completed,
+      };
+    default:
+      return state;
+  }
+};
+
+export default todo;
+```
+
+- todos에서 todo리듀서를 호출하여 업데이트된 todo를 리턴한다.
+- 이 때, 모든 리듀서의 매개변수는 state를 갖는다.
+- state는 해당 리듀서에 맞게 내려주는 것이 이상적이다.
+  - 왜냐하면 개발자든 그 리듀서든 해당 리듀서에 맞는 state 값을 내려주는 것을 기대하고 있다.
+  - 그래서 이렇게 안해줄경우 todo리듀서에서 해당 리듀서에 맞게 값을 매번 접근해야한다.
+  - state.todos[action.id] 이렇게
+- 그래서 todo 리듀서 호출시 다음과 같이 바꿔줘야한다.
+
+```javascript
+todo(state[action.id], action)
+```

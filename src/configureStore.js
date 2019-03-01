@@ -7,13 +7,9 @@ const configureStore = () => {
   const middlewares = [promise];
   if (process.env.NODE_ENV !== 'production') {
     middlewares.push(createLogger());
-    // Note: you can supply options to `createLogger()`
   }
 
-  return createStore(
-    todoApp,
-    applyMiddleware(...middlewares)
-  );
+  return createStore(todoApp, applyMiddleware(...middlewares));
 };
 
 export default configureStore;

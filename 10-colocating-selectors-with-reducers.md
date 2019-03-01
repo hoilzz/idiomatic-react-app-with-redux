@@ -15,7 +15,18 @@ getVisibleTodos 는 reducer 로 옮기고 named export 하게 만든다.
 
 ## Updating the root reducer
 
-visibleTodoList 내부에서, `todos` 값을 state 에서 읽을 수 있기때문에 state 구조에 의존적이다.
+visibleTodoList 내부에서, `todos` 값을 state 에서 읽을 수 있기때문에 **state 구조에 의존적**이다.
+
+_rootReducer.js_
+```javascript
+
+// todos를 인자로 받기 때문에, state.todos로 호출한다. 그래서 state 구조에 의존적
+// const getvisibleTodos(todos, filter) => ...
+
+// 애초에 state를 인자로 받아 state구조에 의존하지 않도록 변경
+export const getVisibleTodos = (state, filter) =>
+  fromTodos.getVisibleTodos(state.todos, filter);
+```
 
 named selector export 와 함께 root reducer 를 업데이트해보자. `getVisibleTodos` 또한 호출될 것이고 이전처럼 state 와 filter 도 허용한다. 그러나, 이번에는 `state`는 combined reducer 의 state 와 일치한다.
 
@@ -38,4 +49,14 @@ mapStateToProps 에 getVisibleTodos 함수를 매핑하자.
 
 여튼 최종적으로
 
-`todos: getVisibleTodos(state, params.filter || 'all')` 이 구조를 만들어서 state 구조가 변경되더라도 UI 를 사용하는 곳은 state 만 넣어주면 된다. 왜냐하면 해당함수는 셀렉터 함수이기 때문이다. 셀렉터 함수는 전체 어플리케이션 상태에 대한 정보를 알고 있고 해당 로직에 따라 state 만 넣어주면 select 해주기 때문이다.
+`todos: getVisibleTodos(todos, filter)`에서 `todos: getVisibleTodos(state, params.filter || 'all')` 이 구조를 만들어서 얻는 이득
+- state 구조가 변경되더라도 UI 를 사용하는 곳은 state 만 넣어주면 된다.
+  - 왜냐하면 해당함수는 셀렉터 함수이기 때문이다.
+  - 셀렉터 함수는 전체 어플리케이션 상태에 대한 정보를 알고 있고 해당 로직에 따라 state 만 넣어주면 select 해주기 때문이다.
+
+- selector을 root reducer로 옮겼다.
+  - 컴포넌트가 들고 있지 않고 리듀서에 둠으로써 재사용성을 높이기 위해서
+
+- root reducer는 프록시 역할만 하고, 실제 셀렉터하는 곳은 관련 서브 리듀서로
+  - 
+
