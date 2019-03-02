@@ -1,4 +1,4 @@
-# 배운거
+# 배운거 요약
 
 ## 1. Colocating Selectors with Reducer
 
