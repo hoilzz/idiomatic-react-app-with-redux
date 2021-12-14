@@ -1,10 +1,18 @@
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import promise from 'redux-promise';
+import createLogger from 'redux-logger';
 import todoApp from './reducers';
 
 const configureStore = () => {
-  const store = createStore(todoApp);
+  const middlewares = [promise];
+  if (process.env.NODE_ENV !== 'production') {
+    middlewares.push(createLogger());
+  }
 
-  return store;
+  return createStore(
+    todoApp,
+    applyMiddleware(...middlewares)
+  );
 };
 
 export default configureStore;
